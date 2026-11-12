@@ -49,8 +49,14 @@ class WorkOrder(BaseModel):
 
 DECOMPOSE = """You are a maintenance planner. Read this fault report and list the separate
 things you would need to look up in the equipment manuals, service bulletins and site safety
-procedures to plan the repair. Write each as a standalone search query that includes the
-equipment model.
+procedures to plan the repair. Write each as a standalone search query.
+
+Cover, where relevant: the documented limit for each reading in the report; probable causes;
+the repair procedure; part numbers (and any serial-number-dependent changes); tightening
+torques; labour; and the site's safety requirements for this work and this asset tag.
+Queries about the equipment should name the equipment model. Queries about site rules
+(isolation, permits, lifting, PPE, escalation) should be phrased as questions about the site
+safety procedure and the asset tag, not about the equipment model.
 
 <fault_report>
 {report}
@@ -65,16 +71,25 @@ If the evidence does not cover something, put it in open_questions instead of gu
 
 
 def gather_evidence(retriever: Retriever, queries: list[str]):
-    best: dict[str, tuple] = {}
-    hits_per_query = {}
+    """Merge sub-query results by RANK, round-robin, not by raw reranker score.
+
+    Cross-encoder scores are not comparable across different queries: a site-safety query
+    scores lower in absolute terms than a query that matches manual tables almost verbatim,
+    so a global sort by score let manual chunks crowd the site procedure out of the evidence
+    (found by the eval: evidence_recall + missing safety controls). Taking each query's #1,
+    then each query's #2, ... guarantees every sub-query's best hit a slot."""
+    hits_per_query, ranked_lists = {}, []
     for q in queries:
         hits = retriever.search(q, TOP_K_PER_QUERY)
         hits_per_query[q] = [(c.id, round(s, 2)) for c, s in hits]
-        for chunk, score in hits:
-            if chunk.id not in best or score > best[chunk.id][1]:
-                best[chunk.id] = (chunk, score)
-    ranked = sorted(best.values(), key=lambda p: p[1], reverse=True)[:MAX_EVIDENCE]
-    return [c for c, _ in ranked], hits_per_query
+        ranked_lists.append([c for c, _ in hits])
+    evidence, seen = [], set()
+    for rank in range(TOP_K_PER_QUERY):
+        for hits in ranked_lists:
+            if rank < len(hits) and hits[rank].id not in seen and len(evidence) < MAX_EVIDENCE:
+                evidence.append(hits[rank])
+                seen.add(hits[rank].id)
+    return evidence, hits_per_query
 
 
 def format_evidence(chunks) -> str:

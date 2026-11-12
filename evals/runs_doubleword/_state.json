@@ -1,0 +1,40 @@
+{
+  "metrics": [
+    {
+      "id": "pass",
+      "label": "Pass",
+      "kind": "binary",
+      "description": "hard facts all correct AND every rubric criterion met"
+    },
+    {
+      "id": "hard_facts",
+      "label": "Hard facts",
+      "kind": "binary",
+      "description": "priority, stop, parts, torque, open question, citations valid"
+    },
+    {
+      "id": "rubric_score",
+      "label": "Rubric",
+      "kind": "continuous",
+      "description": "share of case rubric criteria met (LLM judge)"
+    },
+    {
+      "id": "faithfulness",
+      "label": "Faithfulness",
+      "kind": "continuous",
+      "description": "work-order items supported by the chunks they cite"
+    },
+    {
+      "id": "evidence_recall",
+      "label": "Evid. recall",
+      "kind": "continuous",
+      "description": "gold evidence chunks that reached the planner"
+    },
+    {
+      "id": "citations_ok",
+      "label": "Citations",
+      "kind": "binary",
+      "description": "every cited ID was supplied and every item cites something"
+    }
+  ]
+}

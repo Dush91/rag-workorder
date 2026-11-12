@@ -3,3 +3,8 @@ __pycache__/
 data/
 .DS_Store
 .env
+evals/runs/pilot/
+evals/runs*/*_log.txt
+evals/runs/v1/errors.*
+evals/**/report.html
+evals/**/trajectory/

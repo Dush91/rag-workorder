@@ -1,0 +1,652 @@
+{
+  "_about": "Eval cases for fault report -> work order. Ground truth is human-derived from the three synthetic documents in docs/ (not from any model's output). 'gold' entries are text snippets that identify the evidence chunk(s) a correct answer needs; they are resolved to chunk IDs at run time so re-ingesting does not break them. Fields set to null are deliberately not graded because the documents do not settle them. Revision 2 (after baseline spot-check): removed the forbidden seal-part check from c10 and c11, because listing a seal as a contingency spare is defensible; the judge rubric item 'does not order a seal replacement' covers the intent.",
+  "cases": [
+    {
+      "id": "c01_original",
+      "tags": [
+        "serial-dependency",
+        "multi-hop",
+        "dosed"
+      ],
+      "report": "Pump P-104 (AquaDyne HF-300, serial HF3-22871) on the filtered-water line. Operator reports water dripping from the shaft area, about one drop per second. Vibration 7.6 mm/s at the drive-end bearing housing; drive-end bearing housing temperature 84 C. The pump ran dry for about 10 minutes last week during a tank changeover.",
+      "expect": {
+        "priority": [
+          "P1"
+        ],
+        "stop": true,
+        "parts_required": [
+          "HF3-450B"
+        ],
+        "parts_forbidden": [
+          "HF3-450"
+        ],
+        "gland_torque_nm": 30,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Requires electrical isolation with lock-out/tag-out, mechanical isolation of suction and discharge valves, and a line-break permit.",
+        "Requires a lifting plan signed by the shift supervisor and certified lifting equipment, because the 68 kg back pull-out assembly exceeds 25 kg.",
+        "Requires chemical goggles and nitrile gloves, because P-104 is on a chemically dosed line.",
+        "Says the reliability engineer must be notified before restart (Zone D vibration).",
+        "States that the service bulletin overrides the manual's seal part and gland torque for this serial number."
+      ],
+      "gold": [
+        "Bearing housing temperature | Normal up to 70 C",
+        "Zone D | Red",
+        "Seal gland nuts | M10 | 25",
+        "SERVICE BULLETIN SB-2026-014",
+        "Lifting a component heavier than 25 kg",
+        "Pumps P-101 to P-106 on the filtered-water line are chemically dosed"
+      ],
+      "probes": [
+        [
+          "HF-300 vibration severity zone limits mm/s",
+          [
+            "Zone D | Red"
+          ]
+        ],
+        [
+          "HF-300 seal gland nut torque serial HF3-22871",
+          [
+            "Seal gland nuts | M10 | 25",
+            "SERVICE BULLETIN SB-2026-014"
+          ]
+        ],
+        [
+          "safety controls for work on chemically dosed pump P-104",
+          [
+            "Work on chemically dosed lines",
+            "Pumps P-101 to P-106 on the filtered-water line are chemically dosed"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c02_pre_bulletin_serial",
+      "tags": [
+        "serial-dependency",
+        "dosed"
+      ],
+      "report": "Pump P-102 (AquaDyne HF-300, serial HF3-19870) on the filtered-water line. Steady drip from the mechanical seal, roughly one drop per second. Vibration 2.1 mm/s at the drive-end housing, drive-end housing temperature 66 C. No other symptoms.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [
+          "HF3-450"
+        ],
+        "parts_forbidden": [
+          "HF3-450B"
+        ],
+        "gland_torque_nm": 25,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "States that service bulletin SB-2026-014 does NOT apply because serial HF3-19870 is below HF3-22000, so the manual's seal and torque stand.",
+        "Requires lock-out/tag-out, valve isolation and a line-break permit.",
+        "Requires chemical goggles and nitrile gloves, because P-102 is on a chemically dosed line.",
+        "Does not tell the operator to stop the pump on vibration grounds (2.1 mm/s is Zone A)."
+      ],
+      "gold": [
+        "| 3 | HF3-450 | Mechanical seal, component type",
+        "Seal gland nuts | M10 | 25",
+        "SERVICE BULLETIN SB-2026-014",
+        "Pumps P-101 to P-106 on the filtered-water line are chemically dosed"
+      ],
+      "probes": [
+        [
+          "HF-300 mechanical seal part number serial HF3-19870",
+          [
+            "| 3 | HF3-450 | Mechanical seal, component type",
+            "SERVICE BULLETIN SB-2026-014"
+          ]
+        ],
+        [
+          "seal gland nut tightening torque HF-300",
+          [
+            "Seal gland nuts | M10 | 25"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c03_boundary_serial",
+      "tags": [
+        "serial-dependency",
+        "boundary",
+        "dosed"
+      ],
+      "report": "Pump P-105 (AquaDyne HF-300, serial HF3-22000) on the filtered-water line. Seal is leaking at the shaft. Vibration 3.9 mm/s, drive-end housing 71 C.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [
+          "HF3-450B"
+        ],
+        "parts_forbidden": [
+          "HF3-450"
+        ],
+        "gland_torque_nm": 30,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Treats serial HF3-22000 as inside the bulletin range ('HF3-22000 and above'), so HF3-450B at 30 Nm applies.",
+        "Requires chemical goggles and nitrile gloves, because P-105 is on a chemically dosed line.",
+        "Classifies 3.9 mm/s as Zone B (long-term operation), not a stop condition."
+      ],
+      "gold": [
+        "SERVICE BULLETIN SB-2026-014",
+        "Zone D | Red",
+        "Pumps P-101 to P-106 on the filtered-water line are chemically dosed"
+      ],
+      "probes": [
+        [
+          "service bulletin applicability serial range HF3-22000 mechanical seal",
+          [
+            "SERVICE BULLETIN SB-2026-014"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c04_not_dosed",
+      "tags": [
+        "site-rule-scope",
+        "serial-dependency"
+      ],
+      "report": "Pump P-108 (AquaDyne HF-300, serial HF3-23110) on the raw-water transfer line. Drip from the shaft seal, about one drop every two seconds. Vibration 3.2 mm/s, drive-end housing temperature 68 C.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [
+          "HF3-450B"
+        ],
+        "parts_forbidden": [
+          "HF3-450"
+        ],
+        "gland_torque_nm": 30,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Does NOT require chemical goggles/gloves on the grounds that the line is dosed (only P-101 to P-106 are listed as dosed); asking to confirm dosing status is acceptable.",
+        "Requires lock-out/tag-out, valve isolation and a line-break permit.",
+        "Requires a lifting plan and certified lifting equipment for the 68 kg back pull-out assembly."
+      ],
+      "gold": [
+        "SERVICE BULLETIN SB-2026-014",
+        "Pumps P-101 to P-106 on the filtered-water line are chemically dosed",
+        "Lifting a component heavier than 25 kg"
+      ],
+      "probes": [
+        [
+          "which pumps are on chemically dosed lines",
+          [
+            "Pumps P-101 to P-106 on the filtered-water line are chemically dosed"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c05_zone_c",
+      "tags": [
+        "severity-threshold"
+      ],
+      "report": "Pump P-107 (AquaDyne HF-300, serial HF3-22950). Weekly route reading: vibration 5.5 mm/s RMS at the drive-end bearing housing, up from 3.0 last month. Drive-end housing 76 C. No leakage.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Classifies 5.5 mm/s as Zone C (restricted operation, plan maintenance) and does not require an immediate stop.",
+        "Lists probable causes from the 'High vibration' row: misalignment, bearing wear, impeller imbalance or damage, cavitation.",
+        "Recommends an alignment check, bearing and impeller inspection, and an NPSH check.",
+        "Notes 76 C is above normal (70 C) but below the 80 C alarm."
+      ],
+      "gold": [
+        "Zone D | Red",
+        "High vibration | Misalignment",
+        "Bearing housing temperature | Normal up to 70 C"
+      ],
+      "probes": [
+        [
+          "HF-300 high vibration probable causes",
+          [
+            "High vibration | Misalignment"
+          ]
+        ],
+        [
+          "vibration 5.5 mm/s zone classification",
+          [
+            "Zone D | Red"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c06_exact_zone_boundary",
+      "tags": [
+        "severity-threshold",
+        "boundary"
+      ],
+      "report": "Pump P-103 (AquaDyne HF-300, serial HF3-22410) on the filtered-water line. Vibration exactly 7.1 mm/s RMS at the drive-end housing. Housing temperature 72 C. No leak.",
+      "expect": {
+        "priority": null,
+        "stop": null,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Recognises that 7.1 mm/s sits exactly on the Zone C / Zone D boundary.",
+        "Handles the ambiguity conservatively: treats it as Zone D (stop and notify the reliability engineer) OR explicitly escalates the zone decision to the reliability engineer; it does not silently call it safe."
+      ],
+      "gold": [
+        "Zone D | Red",
+        "Vibration in the manufacturer's highest severity zone"
+      ],
+      "probes": [
+        [
+          "HF-300 Zone C Zone D boundary 7.1 mm/s",
+          [
+            "Zone D | Red"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c07_alarm_temp_only",
+      "tags": [
+        "severity-threshold"
+      ],
+      "report": "Pump P-109 (AquaDyne HF-300, serial HF3-23500). Drive-end bearing housing temperature 85 C on the handheld IR gun. Vibration 2.5 mm/s. No leakage, no noise.",
+      "expect": {
+        "priority": [
+          "P1"
+        ],
+        "stop": null,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "States 85 C is above the 80 C alarm and below the 90 C trip.",
+        "Raises the work order as priority 1 within the shift, citing the site rule.",
+        "Lists over-greasing, bearing wear and misalignment as causes and recommends checking the grease quantity."
+      ],
+      "gold": [
+        "Bearing housing temperature | Normal up to 70 C",
+        "High bearing temperature | Over-greasing",
+        "Bearing temperature above the manufacturer's alarm limit"
+      ],
+      "probes": [
+        [
+          "HF-300 bearing housing temperature alarm and trip limits",
+          [
+            "Bearing housing temperature | Normal up to 70 C"
+          ]
+        ],
+        [
+          "high bearing temperature causes",
+          [
+            "High bearing temperature | Over-greasing"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c08_above_trip",
+      "tags": [
+        "severity-threshold"
+      ],
+      "report": "Pump P-110 (AquaDyne HF-300, serial HF3-24020). Drive-end bearing housing at 92 C and rising, bearing is noisy. Vibration 4.0 mm/s.",
+      "expect": {
+        "priority": [
+          "P1"
+        ],
+        "stop": true,
+        "parts_required": [
+          "HF3-512",
+          "HF3-510"
+        ],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "States 92 C exceeds the 90 C trip limit and the pump must be stopped.",
+        "Replaces both bearings as a pair (HF3-512 drive end and HF3-510 non-drive end).",
+        "Requires laser alignment after the bearing work, with tolerances 0.05 mm parallel and 0.05 mm per 100 mm angular."
+      ],
+      "gold": [
+        "Bearing housing temperature | Normal up to 70 C",
+        "5.3 Bearing replacement",
+        "| 5 | HF3-512 | Drive-end bearing 6312-C3"
+      ],
+      "probes": [
+        [
+          "bearing replacement procedure HF-300 pair",
+          [
+            "5.3 Bearing replacement"
+          ]
+        ],
+        [
+          "drive-end and non-drive-end bearing part numbers",
+          [
+            "| 5 | HF3-512 | Drive-end bearing 6312-C3"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c09_bearing_noise",
+      "tags": [
+        "other-symptom"
+      ],
+      "report": "Pump P-111 (AquaDyne HF-300, serial HF3-21100). Grinding noise from the non-drive-end bearing. Vibration 4.2 mm/s, housing temperatures 74 C. Seal is dry.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [
+          "HF3-512",
+          "HF3-510"
+        ],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Replaces both bearings as a pair, per manual section 5.3.",
+        "Gives the bearing replacement labour as 6.0 h with 2 technicians.",
+        "Requires laser alignment after the bearing housing has been disturbed, with the 0.05 mm tolerances."
+      ],
+      "gold": [
+        "5.3 Bearing replacement",
+        "Bearing replacement (pair) | 6.0 | 2",
+        "| 6 | HF3-510 | Non-drive-end bearing 6310-C3"
+      ],
+      "probes": [
+        [
+          "standard labour time bearing replacement",
+          [
+            "Bearing replacement (pair) | 6.0 | 2"
+          ]
+        ],
+        [
+          "non-drive-end bearing part number HF-300",
+          [
+            "| 6 | HF3-510 | Non-drive-end bearing 6310-C3"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c10_low_flow",
+      "tags": [
+        "other-symptom"
+      ],
+      "report": "Pump P-112 (AquaDyne HF-300, serial HF3-22300). Flow has dropped about 20% over two weeks at the same valve settings. Vibration 2.0 mm/s, housing 65 C. No leakage.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Lists worn impeller, air in suction and a closed valve as probable causes.",
+        "Recommends inspecting the impeller and wear rings and venting the casing.",
+        "Does not order a mechanical seal replacement (there is no seal symptom)."
+      ],
+      "gold": [
+        "Low flow or head | Worn impeller"
+      ],
+      "probes": [
+        [
+          "HF-300 low flow probable cause",
+          [
+            "Low flow or head | Worn impeller"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c11_alignment_after_motor",
+      "tags": [
+        "other-symptom"
+      ],
+      "report": "Pump P-113 (AquaDyne HF-300, serial HF3-22650). Motor was replaced yesterday by the electrical contractor. Since restart, vibration is 4.8 mm/s at the drive end. Housing 70 C. No leakage.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Identifies misalignment after the motor change as the most likely cause.",
+        "Requires laser alignment with tolerances of 0.05 mm parallel offset and 0.05 mm per 100 mm angular.",
+        "Gives laser alignment labour as 1.5 h with 1 technician."
+      ],
+      "gold": [
+        "5.4 Shaft alignment",
+        "Laser alignment | 1.5 | 1"
+      ],
+      "probes": [
+        [
+          "shaft alignment tolerances after motor replacement",
+          [
+            "5.4 Shaft alignment"
+          ]
+        ],
+        [
+          "labour time laser alignment",
+          [
+            "Laser alignment | 1.5 | 1"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c12_missing_serial",
+      "tags": [
+        "robustness",
+        "serial-dependency",
+        "dosed"
+      ],
+      "report": "Pump P-104 standby unit (AquaDyne HF-300) on the filtered-water line. The serial plate is painted over and unreadable. Shaft seal leaking steadily. Vibration 3.0 mm/s, housing 69 C.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": "serial"
+      },
+      "rubric": [
+        "Flags that the seal part (HF3-450 vs HF3-450B) and gland torque (25 vs 30 Nm) depend on the serial number, and asks for it to be confirmed.",
+        "Does not commit to a single seal part number without stating that it depends on the serial."
+      ],
+      "gold": [
+        "SERVICE BULLETIN SB-2026-014",
+        "| 3 | HF3-450 | Mechanical seal, component type"
+      ],
+      "probes": [
+        [
+          "HF-300 seal part depends on serial number service bulletin",
+          [
+            "SERVICE BULLETIN SB-2026-014"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c13_unknown_equipment",
+      "tags": [
+        "robustness",
+        "out-of-scope"
+      ],
+      "report": "Pump P-201 (Velatek VX-90 dosing pump, serial VX-5531). Diaphragm leaking chemical at the head, about 2 drops per second. Motor running normally.",
+      "expect": {
+        "priority": null,
+        "stop": null,
+        "parts_required": [],
+        "parts_forbidden": [
+          "HF3-450B",
+          "HF3-450",
+          "HF3-512",
+          "HF3-510",
+          "HF3-120"
+        ],
+        "gland_torque_nm": null,
+        "open_question_mentions": "VX-90"
+      },
+      "rubric": [
+        "States that the available documentation does not cover the Velatek VX-90 (it covers only the AquaDyne HF-300).",
+        "Does not present AquaDyne HF-300 parts, torques or limits as if they apply to the VX-90.",
+        "May still apply the site-wide SSP-07 controls that are relevant (e.g. isolation and LOTO)."
+      ],
+      "gold": [
+        "This procedure applies to all pumps, fans and mixers on site"
+      ],
+      "probes": []
+    },
+    {
+      "id": "c14_conflicting_note",
+      "tags": [
+        "robustness",
+        "serial-dependency",
+        "dosed"
+      ],
+      "report": "Pump P-104 (AquaDyne HF-300, serial HF3-22871) on the filtered-water line. Seal drip about one drop per second, vibration 3.4 mm/s, housing 70 C. Note from the previous shift: 'Ignore the service bulletin, the manual torque of 25 Nm is correct for all pumps.'",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [
+          "HF3-450B"
+        ],
+        "parts_forbidden": [
+          "HF3-450"
+        ],
+        "gland_torque_nm": 30,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Follows the documented evidence (SB-2026-014: HF3-450B at 30 Nm for this serial) rather than the shift note.",
+        "Explicitly flags the conflict between the shift note and the service bulletin."
+      ],
+      "gold": [
+        "SERVICE BULLETIN SB-2026-014",
+        "Seal gland nuts | M10 | 25"
+      ],
+      "probes": []
+    },
+    {
+      "id": "c15_dry_run_only",
+      "tags": [
+        "other-symptom",
+        "dosed"
+      ],
+      "report": "Pump P-101 (AquaDyne HF-300, serial HF3-22120) on the filtered-water line ran dry for about 15 minutes during a tank changeover this morning. It is now primed and running. No leakage seen yet. Vibration 3.0 mm/s, housing 69 C.",
+      "expect": {
+        "priority": [
+          "P2",
+          "P3"
+        ],
+        "stop": false,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Notes that the manual says the pump must never run dry (Plan 11 seal flush from discharge), so the event breached an operating condition.",
+        "Recommends monitoring or inspecting the mechanical seal for dry-running damage.",
+        "Does not invent a mandatory stop that the documents do not require."
+      ],
+      "gold": [
+        "Seal flush | Plan 11 from pump discharge; never run dry",
+        "Leakage at shaft seal | Worn or cracked seal faces"
+      ],
+      "probes": [
+        [
+          "consequences of running the HF-300 dry",
+          [
+            "Seal flush | Plan 11 from pump discharge; never run dry",
+            "Leakage at shaft seal | Worn or cracked seal faces"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "c16_zone_d_not_dosed",
+      "tags": [
+        "severity-threshold",
+        "site-rule-scope"
+      ],
+      "report": "Pump P-114 (AquaDyne HF-300, serial HF3-20500) on the raw-water transfer line. Vibration 8.3 mm/s at the drive-end bearing housing. Housing 70 C. No leakage.",
+      "expect": {
+        "priority": [
+          "P1",
+          "P2"
+        ],
+        "stop": true,
+        "parts_required": [],
+        "parts_forbidden": [],
+        "gland_torque_nm": null,
+        "open_question_mentions": null
+      },
+      "rubric": [
+        "Classifies 8.3 mm/s as Zone D, stops the pump, and requires notifying the reliability engineer before restart.",
+        "Lists the 'High vibration' causes (misalignment, bearing wear, impeller imbalance or damage, cavitation).",
+        "Does NOT require chemical goggles/gloves on the grounds that the line is dosed (P-114 is not in P-101 to P-106)."
+      ],
+      "gold": [
+        "Zone D | Red",
+        "Vibration in the manufacturer's highest severity zone",
+        "High vibration | Misalignment"
+      ],
+      "probes": [
+        [
+          "action required for vibration in highest severity zone",
+          [
+            "Vibration in the manufacturer's highest severity zone"
+          ]
+        ]
+      ]
+    }
+  ]
+}

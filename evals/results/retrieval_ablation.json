@@ -1,0 +1,62 @@
+{
+  "n_probes": 22,
+  "n_reports": 16,
+  "rows": [
+    {
+      "retriever": "BM25 only",
+      "chunk_text": "with context",
+      "probe_recall@5": 1.0,
+      "probe_mrr": 0.9090909090909091,
+      "report_recall@5": 0.5104166666666666
+    },
+    {
+      "retriever": "Dense only",
+      "chunk_text": "with context",
+      "probe_recall@5": 1.0,
+      "probe_mrr": 0.8446969696969696,
+      "report_recall@5": 0.5260416666666666
+    },
+    {
+      "retriever": "Hybrid (RRF)",
+      "chunk_text": "with context",
+      "probe_recall@5": 1.0,
+      "probe_mrr": 0.9015151515151515,
+      "report_recall@5": 0.546875
+    },
+    {
+      "retriever": "Hybrid + rerank",
+      "chunk_text": "with context",
+      "probe_recall@5": 1.0,
+      "probe_mrr": 0.9696969696969696,
+      "report_recall@5": 0.40624999999999994
+    },
+    {
+      "retriever": "BM25 only",
+      "chunk_text": "raw chunk only",
+      "probe_recall@5": 0.9772727272727273,
+      "probe_mrr": 0.9181818181818181,
+      "report_recall@5": 0.46354166666666663
+    },
+    {
+      "retriever": "Dense only",
+      "chunk_text": "raw chunk only",
+      "probe_recall@5": 0.8636363636363636,
+      "probe_mrr": 0.83008658008658,
+      "report_recall@5": 0.40625
+    },
+    {
+      "retriever": "Hybrid (RRF)",
+      "chunk_text": "raw chunk only",
+      "probe_recall@5": 0.9772727272727273,
+      "probe_mrr": 0.8765151515151515,
+      "report_recall@5": 0.49479166666666663
+    },
+    {
+      "retriever": "Hybrid + rerank",
+      "chunk_text": "raw chunk only",
+      "probe_recall@5": 0.9772727272727273,
+      "probe_mrr": 0.8575757575757574,
+      "report_recall@5": 0.34375
+    }
+  ]
+}
