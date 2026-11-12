@@ -169,6 +169,9 @@ The first run downloads two small local models (embedder and reranker, about 200
 
 ## Evaluation
 
+> **Full write-up: [`evals/REPORT.md`](evals/REPORT.md)** (design, results, root-cause analysis,
+> failure analysis, cost, threats to validity).
+
 The eval found a real bug, a fix was measured against it, and it also caught bugs in its own
 graders. Everything is in [`evals/`](evals/).
 
