@@ -1,0 +1,321 @@
+Sub-queries and the chunks each one retrieved:
+  - AquaDyne HF-300 mechanical seal leakage acceptable drip rate and seal replacement procedure
+      [('C10', 5.74), ('C09', 5.49), ('C08', 4.63), ('C12', 4.61), ('C11', 3.86)]
+  - AquaDyne HF-300 dry running damage mechanical seal and bearing inspection after dry run
+      [('C09', 5.33), ('C10', 4.83), ('C08', 4.03), ('C12', 3.91), ('C02', 3.66)]
+  - AquaDyne HF-300 vibration limits drive-end bearing housing mm/s alarm and trip levels
+      [('C02', 6.24), ('C07', 6.11), ('C06', 5.13), ('C10', 1.97), ('C08', 1.97)]
+  - AquaDyne HF-300 drive-end bearing maximum operating temperature and lubrication specification
+      [('C02', 6.32), ('C01', 4.57), ('C07', 4.46), ('C09', 3.69), ('C05', 3.51)]
+  - AquaDyne HF-300 bearing replacement procedure, part numbers and torque settings
+      [('C11', 5.85), ('C10', 5.64), ('C05', 5.23), ('C09', 4.67), ('C03', 4.57)]
+  - AquaDyne HF-300 service bulletins mechanical seal or bearing issues serial HF3-22871
+      [('C13', 7.27), ('C10', 4.38), ('C09', 4.12), ('C05', 3.97), ('C08', 3.89)]
+  - AquaDyne HF-300 shaft alignment and coupling tolerances after bearing or seal replacement
+      [('C10', 7.41), ('C09', 5.74), ('C08', 5.67), ('C12', 5.2), ('C11', 3.61)]
+  - Site lockout/tagout and isolation procedure for filtered-water line pump P-104 AquaDyne HF-300
+      [('C16', 2.79), ('C15', 2.62), ('C10', 1.74), ('C04', 0.93), ('C07', 0.45)]
+
+Work order:
+{
+  "asset": "Pump P-104, AquaDyne HF-300 end-suction centrifugal pump, serial HF3-22871, filtered-water line (chemically dosed with sodium hypochlorite)",
+  "priority": "P1",
+  "stop_equipment_now": true,
+  "condition_assessment": [
+    {
+      "statement": "Drive-end vibration is 7.6 mm/s. This is above the 7.1 mm/s Zone C/D boundary in manual Figure 3, so it falls in Zone D (red): 'Damage likely - stop the pump'. The manual says to act on the zone of the highest housing reading. Site rule SSP-07 requires an immediate stop in the manufacturer's highest severity zone and notification of the reliability engineer before restart.",
+      "citations": [
+        "C07",
+        "C06",
+        "C15"
+      ]
+    },
+    {
+      "statement": "Drive-end bearing housing temperature is 84 C. Manual limits are normal up to 70 C, alarm 80 C and trip 90 C, so the reading is 4 C above alarm and 6 C below trip. Because it exceeds the manufacturer's alarm limit, SSP-07 requires a priority-1 work order raised within the shift. The manual measures temperature on the housing surface, which matches where this reading was taken.",
+      "citations": [
+        "C02",
+        "C01",
+        "C15"
+      ]
+    },
+    {
+      "statement": "There is shaft seal leakage of about one drop per second. The evidence gives no acceptable leakage rate, but the troubleshooting table lists shaft-seal leakage as a symptom requiring mechanical seal replacement (section 5.2).",
+      "citations": [
+        "C09"
+      ]
+    },
+    {
+      "statement": "The pump ran dry for about 10 minutes during a tank changeover. This breaches the manual requirement 'never run dry' for the Plan 11 seal flush, and 'seal run dry' is a listed cause of shaft-seal leakage.",
+      "citations": [
+        "C02",
+        "C09"
+      ]
+    }
+  ],
+  "probable_causes": [
+    {
+      "statement": "Mechanical seal faces worn or cracked from the dry-run event. This is the direct cause of the shaft leakage, given the documented dry-run history and the 'never run dry' requirement.",
+      "citations": [
+        "C09",
+        "C02"
+      ]
+    },
+    {
+      "statement": "Drive-end bearing wear or damage. Bearing wear is a listed cause of both high vibration and high bearing temperature, and both are elevated at the drive end.",
+      "citations": [
+        "C09"
+      ]
+    },
+    {
+      "statement": "Shaft misalignment. It is the only listed cause common to all three symptoms: seal leakage, high vibration and high bearing temperature.",
+      "citations": [
+        "C09"
+      ]
+    },
+    {
+      "statement": "Over-greasing of the drive-end bearing, which is a listed cause of high bearing temperature.",
+      "citations": [
+        "C09"
+      ]
+    },
+    {
+      "statement": "Impeller imbalance or damage, or cavitation. These are listed causes of high vibration; cavitation would point to an NPSH check.",
+      "citations": [
+        "C09"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "statement": "Stop P-104 immediately because vibration is in Zone D. Notify the reliability engineer. Do not restart until the reliability engineer approves.",
+      "citations": [
+        "C07",
+        "C15"
+      ]
+    },
+    {
+      "statement": "Isolate the pump before any work inside it or on its seal: electrical LOTO at the MCC, then close the suction and discharge valves. Obtain a line-break permit, then drain and vent the pump.",
+      "citations": [
+        "C15",
+        "C10"
+      ]
+    },
+    {
+      "statement": "Before dismantling, record the as-found shaft alignment with a laser alignment tool against the tolerances (parallel offset 0.05 mm; angular 0.05 mm per 100 mm). This confirms or rules out misalignment as a cause.",
+      "citations": [
+        "C09",
+        "C10"
+      ]
+    },
+    {
+      "statement": "Remove the back pull-out assembly (68 kg) using certified lifting equipment under a lifting plan signed by the shift supervisor.",
+      "citations": [
+        "C10",
+        "C02",
+        "C15"
+      ]
+    },
+    {
+      "statement": "Remove the impeller nut and impeller. Inspect the impeller for damage or imbalance and the wear rings for wear.",
+      "citations": [
+        "C10",
+        "C09"
+      ]
+    },
+    {
+      "statement": "Withdraw the old seal and the shaft sleeve and inspect the sleeve for scoring. Replace sleeve HF3-455 if scoring exceeds 0.1 mm depth (SB-2026-014).",
+      "citations": [
+        "C10",
+        "C13"
+      ]
+    },
+    {
+      "statement": "Replace both bearings as a pair: drive-end HF3-512 (6312-C3) and non-drive-end HF3-510 (6310-C3). The manual requires pair replacement when either bearing shows high temperature or wear. Check the grease quantity on reassembly to avoid over-greasing.",
+      "citations": [
+        "C10",
+        "C09",
+        "C05"
+      ]
+    },
+    {
+      "statement": "Fit new cartridge seal HF3-450B. Do NOT fit HF3-450 on this serial. HF3-450B is pre-set, so no sleeve measurement is needed. Fit a new casing gasket HF3-120.",
+      "citations": [
+        "C13",
+        "C10",
+        "C05"
+      ]
+    },
+    {
+      "statement": "Reassemble and torque on lightly oiled threads: impeller nut M24 to 160 Nm; seal gland nuts M10 to 30 Nm (SB-2026-014 value for HF3-450B, not 25 Nm); bearing housing bolts M12 to 85 Nm; casing bolts M16 to 210 Nm.",
+      "citations": [
+        "C11",
+        "C13"
+      ]
+    },
+    {
+      "statement": "Perform a final laser alignment, because the bearing housing and the back pull-out assembly have been moved. Tolerances are parallel offset 0.05 mm and angular 0.05 mm per 100 mm.",
+      "citations": [
+        "C10"
+      ]
+    },
+    {
+      "statement": "Before restart, confirm the Plan 11 seal flush from discharge is in place and the pump is fully flooded and vented, so the pump never runs dry. Obtain the reliability engineer's approval to restart.",
+      "citations": [
+        "C02",
+        "C15",
+        "C09"
+      ]
+    },
+    {
+      "statement": "After restart, measure vibration on both bearing housings and classify the highest reading per Figure 3; it should be well below 4.5 mm/s, ideally Zone A below 2.8 mm/s. Confirm housing temperature stays at or below 70 C and that there is no seal leakage.",
+      "citations": [
+        "C06",
+        "C07",
+        "C02"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "part_number": "HF3-450B",
+      "description": "Cartridge mechanical seal, pre-set (supersedes HF3-450 for serial HF3-22000 and above)",
+      "quantity": 1,
+      "citations": [
+        "C13"
+      ]
+    },
+    {
+      "part_number": "HF3-120",
+      "description": "Casing gasket (replace whenever casing is opened)",
+      "quantity": 1,
+      "citations": [
+        "C05",
+        "C10"
+      ]
+    },
+    {
+      "part_number": "HF3-512",
+      "description": "Drive-end bearing 6312-C3 (replace as pair)",
+      "quantity": 1,
+      "citations": [
+        "C05",
+        "C10"
+      ]
+    },
+    {
+      "part_number": "HF3-510",
+      "description": "Non-drive-end bearing 6310-C3 (replace as pair)",
+      "quantity": 1,
+      "citations": [
+        "C05",
+        "C10"
+      ]
+    },
+    {
+      "part_number": "HF3-455",
+      "description": "Shaft sleeve - have available; fit only if scoring exceeds 0.1 mm depth",
+      "quantity": 1,
+      "citations": [
+        "C13",
+        "C05"
+      ]
+    }
+  ],
+  "safety_controls": [
+    {
+      "statement": "Stop immediately (Zone D vibration) and notify the reliability engineer; no restart without their approval.",
+      "citations": [
+        "C15",
+        "C07"
+      ]
+    },
+    {
+      "statement": "Electrical isolation and LOTO at the MCC; mechanical isolation of the suction and discharge valves; line-break permit with the pump drained and vented first.",
+      "citations": [
+        "C15"
+      ]
+    },
+    {
+      "statement": "Lifting plan signed by the shift supervisor and certified lifting equipment for the 68 kg back pull-out assembly (above the 25 kg threshold).",
+      "citations": [
+        "C15",
+        "C02"
+      ]
+    },
+    {
+      "statement": "Chemical goggles and nitrile gloves, because P-101 to P-106 on the filtered-water line are dosed with sodium hypochlorite.",
+      "citations": [
+        "C16",
+        "C15"
+      ]
+    },
+    {
+      "statement": "Raise as a priority-1 work order within the shift, because bearing temperature (84 C) exceeds the 80 C alarm limit.",
+      "citations": [
+        "C15",
+        "C02"
+      ]
+    }
+  ],
+  "labour": [
+    {
+      "statement": "Mechanical seal replacement: 4.0 h, 2 technicians.",
+      "citations": [
+        "C12"
+      ]
+    },
+    {
+      "statement": "Bearing replacement (pair): 6.0 h, 2 technicians.",
+      "citations": [
+        "C12"
+      ]
+    },
+    {
+      "statement": "Laser alignment: 1.5 h, 1 technician.",
+      "citations": [
+        "C12"
+      ]
+    },
+    {
+      "statement": "The sum of the standard times is 11.5 h if the tasks are done sequentially. Actual time may be less because seal and bearing work share the back pull-out disassembly, but the evidence does not give a combined time.",
+      "citations": [
+        "C12"
+      ]
+    }
+  ],
+  "source_conflicts": [
+    {
+      "statement": "Seal part number: the manual parts list (Rev D) specifies HF3-450 component seal, while SB-2026-014 (issued 14 March 2026) says do NOT fit HF3-450 on serials HF3-22000 and above and use cartridge seal HF3-450B. Serial HF3-22871 is within the bulletin range and the bulletin is the newer document, so HF3-450B applies.",
+      "citations": [
+        "C05",
+        "C13"
+      ]
+    },
+    {
+      "statement": "Seal gland nut torque: manual Table 5 gives 25 Nm, while SB-2026-014 gives 30 Nm for HF3-450B. Because this serial (HF3-22871) is at or above HF3-22000 and must use HF3-450B, 30 Nm applies. Table 5 remains valid for all other fasteners.",
+      "citations": [
+        "C11",
+        "C13"
+      ]
+    },
+    {
+      "statement": "Sleeve inspection: manual 5.2 says only 'inspect the sleeve for scoring', with no limit. The bulletin adds a replacement criterion of more than 0.1 mm scoring depth and removes the need for sleeve measurement for this serial range. The bulletin criterion applies to this pump.",
+      "citations": [
+        "C10",
+        "C13"
+      ]
+    }
+  ],
+  "open_questions": [
+    "What is the non-drive-end bearing housing vibration and temperature? The procedure requires both housings, but only drive-end readings were reported.",
+    "Was the 7.6 mm/s reading taken as RMS velocity, as Figure 3 requires?",
+    "What are the correct grease type and quantity for the bearings? The evidence does not specify them, so over-greasing cannot be checked against a value.",
+    "What are the acceptance or replacement criteria for impeller and wear-ring wear or damage, and what is the NPSH available versus required (cavitation check)? Neither is given.",
+    "Is any seal leakage rate acceptable after repair? None is documented.",
+    "Does a combined labour time exist for doing seal, bearing and alignment work together, given the shared disassembly?",
+    "Is HF3-450B (and HF3-455 if needed) in stock?",
+    "What controls (e.g. low-level or dry-run protection) will prevent a repeat dry run during tank changeovers? The evidence does not cover them."
+  ]
+}
+
+Citation check: {'items': 38, 'unknown_ids': [], 'uncited_items': [], 'ok': True}

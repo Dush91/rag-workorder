@@ -1,0 +1,18 @@
+[project]
+name = "rag-workorder"
+version = "0.1.0"
+description = "Fault report to cited, verified work order: multimodal RAG with Claude"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=2.8.0",
+    "fastembed>=0.9.1",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.4",
+    "pillow>=13.0.0",
+    "pydantic>=2.14.3",
+    "pymupdf>=2.1",
+    "rank-bm25>=0.2.2",
+    "reportlab>=5.1.0",
+    "streamlit>=1.67.0",
+]
